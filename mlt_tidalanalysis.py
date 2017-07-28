@@ -1,29 +1,35 @@
-#==============================================================================
-# this module is a toolbox for atmosphere tide analysis.
-#
-# Yu-Tsung 2015.11.28 first release "tidaldecompo", "tidalrecompo"
-# Yu-Tsung 2015.12.13 update and add "tide_sample"
-#==============================================================================
+#!/usr/local/bin/python3
+"""
+this module is a toolbox for atmosphere tide analysis.
+
+Yu-Tsung 2015.11.28 first release "tidaldecompo", "tidalrecompo"
+Yu-Tsung 2015.12.13 update and add "tide_sample"
+"""
+
 import numpy as np
-#==============================================================================
+
+
 def tidaldecompo(data,ut,glon):
-#==============================================================================
-# tidal decomposition
-# A = Tide amplitude, B = Phasa
-# C = Zonal and time mean
-#
-# Yu-Tsung 2015.11.28
-#==============================================================================
-#  wavefun = n*W*t-s*lambda
-#  Y = A*cos(n*W*t-s*lambda+B)
-#  [cos(wavefun)-sin(wavefun)]*[A*cos(theta),A*sin(theta)] = data;
-#  X*A = Y  ->  X = A\Y
-#  
-#  n = period (0,1,2,3)
-#  W = Angular velocity of the Earth (2*pi/24)
-#  t = time (hr)
-#  s = wavenumber (-4,-3,-2,-1,0,1,2,3,4)
-#  lambda_glon = glon*2*pi/360
+    """
+    ===========================================================================
+    tidal decomposition
+    A = Tide amplitude, B = Phasa
+    C = Zonal and time mean
+    
+    Yu-Tsung 2015.11.28
+    ===========================================================================
+    wavefun = n*W*t-s*lambda
+    Y = A*cos(n*W*t-s*lambda+B)
+    [cos(wavefun)-sin(wavefun)]*[A*cos(theta),A*sin(theta)] = data;
+    X*A = Y  ->  X = A\Y
+      
+    n = period (0,1,2,3)
+    W = Angular velocity of the Earth (2*pi/24)
+    t = time (hr)
+    s = wavenumber (-4,-3,-2,-1,0,1,2,3,4)
+    lambda_glon = glon*2*pi/360
+    """
+
     data = data.reshape(data.size,1)
     ut   = ut.reshape(ut.size,1)
     glon = glon.reshape(glon.size,1)
@@ -61,16 +67,20 @@ def tidaldecompo(data,ut,glon):
     B[index2] = B[index2]-np.pi
     
     return A, B, C
-#==============================================================================
+
+
 def tidalrecompo(ut,glon,A,B,C,component_name='DW1'):
-#==============================================================================
-# tidal recomposition
-# A = Tide amplitude, B = Phasa
-# C = Zonal and time mean
-# component_name (ie. DW1,SW2,TW3...DE3.....)
-#
-# Yu-Tsung 2015.11.29
-#==============================================================================    
+    """
+    ===========================================================================
+    tidal recomposition
+    A = Tide amplitude, B = Phasa
+    C = Zonal and time mean
+    component_name (ie. DW1,SW2,TW3...DE3.....)
+   
+    Yu-Tsung 2015.11.29
+    ===========================================================================
+    """
+
     W = 2.*np.pi/24.
     lambda_glon = glon*2.*np.pi/360.
     glon[glon>180] = glon[glon>180]-360
@@ -106,14 +116,9 @@ def tidalrecompo(ut,glon,A,B,C,component_name='DW1'):
         Yt += Each_Y
     Yt += C
     return Yt, Y
-#==============================================================================
+
+
 if __name__=="__main__":
-#tide_sample():
-# make tide sample
-#
-# Yu-Tsung 2015.12.13
-# Yu-Tsung 2017.06.10 update
-#==============================================================================
     ut_tmp = np.arange(0,24,1)
     glon_tmp = np.arange(-180,180,2.5)
     ut,glon = np.meshgrid(ut_tmp,glon_tmp)
@@ -125,8 +130,8 @@ if __name__=="__main__":
     # DW1, SW2, TW3, DE3, SPW1, SPW2
     n    = np.array([ 1, 2, 3, 1, 0, 0])
     s    = np.array([-1,-2,-3, 3, 1, 2])
-    theta= np.array([ 3, 3, 3, 2, 1, 0])*W
-#============================================================================== 
+    theta= np.array([ 3, 3, 3, 2, 1, 0]) * W
+
     dw1 = 30*np.cos(n[0]*W*ut-s[0]*lambda_glon+theta[0])
     sw2 = 20*np.cos(n[1]*W*ut-s[1]*lambda_glon+theta[1])
     tw3 = 10*np.cos(n[2]*W*ut-s[2]*lambda_glon+theta[2])
