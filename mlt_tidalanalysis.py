@@ -140,7 +140,7 @@ if __name__ == '__main__':
     de3 = 25 * np.cos(n[3] * W * ut - s[3] * lambda_glon + theta[3])
     spw1= 15 * np.cos(n[4] * W * ut - s[4] * lambda_glon + theta[4])
     spw2=  5 * np.cos(n[5] * W * ut - s[5] * lambda_glon + theta[5])
-    data = dw1+sw2+tw3+de3+spw1+spw2 + 50 # set zonal mean = 50
+    data = dw1 + sw2 + tw3 + de3 + spw1 + spw2 + 50 # set zonal mean = 50
 
     amplitude, phase, zonal_mean = tidaldecompo(data, ut, glon)
     
